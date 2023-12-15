@@ -1,11 +1,16 @@
 import * as dao from "./dao.js";
-import { findById } from "./dao.js";
+import * as userDao from "../users/dao.js";
 
 const BASE_PATH = "/api/original";
 
 const OriginalRoutes = (app) => {
 	app.post(`${BASE_PATH}`, async (req, res) => {
 		try {
+			const userFound = await userDao.findUserById(req.body.user);
+			if (!userFound || !userFound.active) {
+				res.status(400).json({ error: "You are blocked the admin." });
+				return;
+			}
 			const result = await dao.createOriginal(req.body);
 			res.json(result);
 		} catch (error) {

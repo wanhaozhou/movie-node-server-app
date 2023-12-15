@@ -17,6 +17,11 @@ const MovieReviewRoutes = (app) => {
 
 	const createReview = async (req, res) => {
 		try {
+			const userFound = await userDao.findUserById(req.body.user);
+			if (!userFound || !userFound.active) {
+				res.status(400).json({ error: "You are blocked the admin." });
+				return;
+			}
 			await dao.createReview(req.body);
 			res.sendStatus(200);
 		} catch (error) {
@@ -40,6 +45,7 @@ const MovieReviewRoutes = (app) => {
 			const user = await userDao.findUserByUsername(req.params.username);
 			if (!user) {
 				res.status(400).error({ error: "No user" });
+				return;
 			}
 			const data = await dao.findReviewsByUser(user._id);
 			res.json(data);

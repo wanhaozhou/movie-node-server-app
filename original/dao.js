@@ -15,5 +15,8 @@ export const findById = async (_id) =>
 
 export const findSimilar = async (q) =>
 	model.find({
-		$or: [{ title: new RegExp(q, "i") }, { overview: new RegExp(q, "i") }],
+		$or: [
+			{ title: new RegExp(q, "i"), delete: false },
+			{ overview: new RegExp(q, "i"), delete: false },
+		],
 	});
